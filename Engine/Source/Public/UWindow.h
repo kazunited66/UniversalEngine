@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 
+class UGraphicsEngine; 
+
 struct LSWindowParmas
 {
 	//default constructor
@@ -37,11 +39,11 @@ struct LSWindowParmas
 
 struct SDL_Window;
 
-class LWindow {
+class UWindow {
 
 public:
-	LWindow();
-	~LWindow();
+	UWindow();
+	~UWindow();
 
 	//create window with parameters
 	bool CreateWindow(const LSWindowParmas& params);
@@ -51,6 +53,9 @@ public:
 
 	//check if the window has been set to close 
 	bool IsPendingClose() { return m_shouldClose; }
+
+	//render the graphics engine 
+	void Render();
 private:
 	//a ref to the window in sdl 
 	SDL_Window* m_sdlWindow;
@@ -58,4 +63,7 @@ private:
 	LSWindowParmas m_params;
 	//determine is the window should close 
 	bool m_shouldClose;
+	//store the graphics engine 
+	std::unique_ptr< UGraphicsEngine> m_graphicsEngine;
+
 };

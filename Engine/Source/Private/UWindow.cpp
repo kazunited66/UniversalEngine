@@ -1,8 +1,10 @@
-#include "LWindow.h"
+#include "UWindow.h"
+#include "Graphics/UGraphicsEngine.h"
+#include "Debug/UDebug.h"
 // External Libs 
 #include <SDL/SDL.h>
 
-LWindow::LWindow()
+UWindow::UWindow()
 {
 	m_sdlWindow = nullptr;
 	m_shouldClose = false;
@@ -10,7 +12,7 @@ LWindow::LWindow()
 	std::cout << "Window created" << std::endl;
 }
 
-LWindow::~LWindow()
+UWindow::~UWindow()
 {
 	//if sdl window exsist, destroy it 
 	if (m_sdlWindow)
@@ -19,7 +21,7 @@ LWindow::~LWindow()
 	std::cout << "Window destroyed" << std::endl;
 }
 
-bool LWindow::CreateWindow(const LSWindowParmas& params)
+bool UWindow::CreateWindow(const LSWindowParmas& params)
 {
 	//enabling the paramater to the member for the window 
 	unsigned int windowFlags = SDL_WINDOW_OPENGL;
@@ -54,7 +56,22 @@ bool LWindow::CreateWindow(const LSWindowParmas& params)
 		return false;
 	}
 
-
+	//create graphics engine object 
+	m_graphicsEngine = std::make_unique<UGraphicsEngine>();
+	//initialise the graphics engine and test if it falied 
+	if (!m_graphicsEngine->InitEngine(m_sdlWindow, m_params.vsync)) {
+		UDebug::Log("Window failed to initialise graphics engine", LT_ERROR);
+		m_graphicsEngine = nullptr;
+		return false;
+	}
 
 	return true;
+}
+
+void UWindow::Render()
+{
+	//render the graphics engine if one exists
+	if (m_graphicsEngine) {
+		m_graphicsEngine->Render(m_sdlWindow);
+	}
 }

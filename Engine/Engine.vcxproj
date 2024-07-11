@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -98,17 +98,28 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ExternalLibs\Includes\STB_IMAGE\stb_image.cpp" />
     <ClCompile Include="Source\Private\Graphics\UGraphicsEngine.cpp" />
     <ClCompile Include="Source\Private\Graphics\UMesh.cpp" />
     <ClCompile Include="Source\Private\Graphics\UShaderProgram.cpp" />
+    <ClCompile Include="Source\Private\Listeners\UInput.cpp" />
     <ClCompile Include="Source\Private\UWindow.cpp" />
+    <ClCompile Include="Source\Private\Graphics\UTexture.cpp" />
+    <ClCompile Include="Source\Private\Graphics\UModel.cpp" />
     <ClCompile Include="Source\Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ExternalLibs\Includes\STB_IMAGE\stb_image.h" />
     <ClInclude Include="Source\Public\Debug\UDebug.h" />
+    <ClInclude Include="Source\Public\EngineTypes.h" />
     <ClInclude Include="Source\Public\Graphics\UGraphicsEngine.h" />
     <ClInclude Include="Source\Public\Graphics\UMesh.h" />
+    <ClInclude Include="Source\Public\Graphics\UModel.h" />
+    <ClInclude Include="Source\Public\Graphics\USCamera.h" />
     <ClInclude Include="Source\Public\Graphics\UShaderProgram.h" />
+    <ClInclude Include="Source\Public\Graphics\UTexture.h" />
+    <ClInclude Include="Source\Public\Listeners\UEvents.h" />
+    <ClInclude Include="Source\Public\Listeners\UInput.h" />
     <ClInclude Include="Source\Public\Math\USTransform.h" />
     <ClInclude Include="Source\Public\UWindow.h" />
   </ItemGroup>

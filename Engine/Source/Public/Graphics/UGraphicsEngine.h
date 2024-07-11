@@ -1,9 +1,10 @@
 #pragma once
-#include<iostream>
+#include<EngineTypes.h>
 typedef void* SDL_GLContext;
 struct SDL_Window; 
 class UMesh;
 class UShaderProgram;
+struct USCamera;
 
 class UGraphicsEngine {
 public:
@@ -15,13 +16,16 @@ public:
 
 	//render the graphics engine 
 	void Render(SDL_Window* sdlWindow);
+	//return a weak version of the camera 
+	TWeak<USCamera>GetCamera() { return m_camera; }
 
 private:
 	// storing memory location for open gl context 
 	SDL_GLContext m_sdlGLContext; 
 
 	//store the shader for the engine
-	std::shared_ptr<UShaderProgram> m_shader;
-
+	TShared<UShaderProgram> m_shader;
+	//store camera 
+	TShared<USCamera> m_camera;
 
 };

@@ -1,14 +1,16 @@
-#include <iostream>
+#include <EngineTypes.h>
 
 // Extarnal Libs 
 #include <SDL/SDL.h>
 
 //External Libs
 #include "UWindow.h"
+#include "Listeners/UInput.h"
+#include "Graphics/USCamera.h"
 
 //source variables 
-std::unique_ptr<UWindow> m_window;
-
+TShared<UWindow> m_window;
+TShared<UInput> m_input;
 
 //source fanctions 
 bool Initialise()
@@ -36,7 +38,7 @@ bool Initialise()
 
 
 	//creating window object 
-	m_window = std::make_unique<UWindow>();
+	m_window = TMakeShared<UWindow>();
 
 	//creating an sdl window 
 	if (!m_window->CreateWindow({ "Game Window",
@@ -44,6 +46,9 @@ bool Initialise()
 		720, 720 }))
 		return false;
 
+	//create the input class and assign the window 
+	m_input = TMakeShared<UInput>();
+	m_input->InitInput(m_window);
 
 	return true;
 }
@@ -60,22 +65,17 @@ int main(int argc, char* argv[]) {
 		CleanUp();
 		return-1;
 	}
-
+	//register the window input 
+	m_window->RegisterInput(m_input);
 
 	// keep the game open as long as the window is open 
 	while (!m_window->IsPendingClose()) {
-		//TO DO: Game Loop
-		SDL_Event e;
-		while (SDL_PollEvent(&e)) {
-			if (e.type == SDL_QUIT) {
-				m_window->CloseWindow();
-			}
-		}
+		//handle inputs
+		m_input->UpdateInputs();
+	
 		//render the window 
 		m_window->Render();
 	}
-
-
 
 	//clean up the engine
 	CleanUp();

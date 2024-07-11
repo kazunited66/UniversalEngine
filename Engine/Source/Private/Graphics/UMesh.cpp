@@ -115,7 +115,7 @@ bool UMesh::CreateMesh(const std::vector<USVertextData> vertices, const std::vec
 	//pass out the vertex data in sperate formats 
 	glEnableVertexAttribArray(1);
 
-	//set the position of data to the 0 index of the attribute array 
+	//set the color of that data to this 0 index of the attribute array 
 	glVertexAttribPointer(
 		1,//location to store data ain the attribute array 
 		3,//how many number to pass into the attribute array index 
@@ -124,6 +124,20 @@ bool UMesh::CreateMesh(const std::vector<USVertextData> vertices, const std::vec
 		sizeof(USVertextData),//how big is each data array in a VertexData
 		(void*)(sizeof(float) * 3)//how many numbers to skip in byts
 	);
+
+	//pass out the vertex data in sperate formats 
+	glEnableVertexAttribArray(2);
+
+	//set the texture coordinates of that data to this 0 index of the attribute array 
+	glVertexAttribPointer(
+		2,//location to store data ain the attribute array 
+		3,//how many number to pass into the attribute array index 
+		GL_FLOAT,//the type of data to store 
+		GL_FALSE,//should we normalise the values, generally no
+		sizeof(USVertextData),//how big is each data array in a VertexData
+		(void*)(sizeof(float) * 6)//how many numbers to skip in byts
+	);
+
 
 
 	//common practice to clear the vao from the GPU 
@@ -134,7 +148,13 @@ bool UMesh::CreateMesh(const std::vector<USVertextData> vertices, const std::vec
 
 void UMesh::Render(const std::shared_ptr<UShaderProgram>& shader, const USTransform& transform)
 {
-	shader->Activate();
+	
+    //does a texture exsit 
+	if (m_texture) {
+		//run the texture 
+		shader->RunTexture(m_texture, 0);
+
+	}
 	//update the transform of the mesh based on the model transform 
 	shader->SetModelTransform(transform); 
 

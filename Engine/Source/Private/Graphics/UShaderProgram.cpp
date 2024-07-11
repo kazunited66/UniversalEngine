@@ -1,6 +1,8 @@
 #include <Graphics/UShaderProgram.h>
 #include <Debug/UDebug.h>
 #include <Math/USTransform.h>
+#include <Graphics/UTexture.h>
+#include <Graphics/USCamera.h>
 
 //External Libs
 #include <GLEW/glew.h>
@@ -23,7 +25,7 @@ UShaderProgram::~UShaderProgram()
 	UDebug::Log("Shader program " + std::to_string(m_programID) + "destroyed");
 }
 
-bool UShaderProgram::InitShader(const std::string& vShaderPath, const std::string& fShaderPath)
+bool UShaderProgram::InitShader(const UString& vShaderPath, const UString& fShaderPath)
 {
 	//create the shader program in open gl 
 	m_programID = glCreateProgram();
@@ -49,8 +51,9 @@ void UShaderProgram::Activate()
 
 void UShaderProgram::SetModelTransform(const USTransform& transform)
 {
-	// translate(move)>rotate > scale (this allows us to rotate around the new location) 
+	//translate(move)>rotate > scale (this allows us to rotate around the new location) 
 	//initialise default matrix transform 
+
 	glm::mat4  matrixT = glm::mat4(1.0f);
 
 	//translate the matrix 
@@ -73,7 +76,73 @@ void UShaderProgram::SetModelTransform(const USTransform& transform)
 		);
 }
 
-bool UShaderProgram::ImportShaderByType(const std::string& filePath, UEShaderType shaderType)
+void UShaderProgram::RunTexture(const TShared<UTexture>& texture, const UUi32& slot)
+{
+	// bind the texture 
+	texture->BindTexture(slot); 
+
+	//the id for the variable in the shader 
+	int varID = 0; 
+
+	//get id deppending on the slot 
+	switch (slot) {
+	case 0:
+		varID = glGetUniformLocation(m_programID, "colourMap");
+		break;
+	default:
+		break;
+	}
+
+	//update the shader 
+	glUniform1i(varID, slot);  
+}
+
+void UShaderProgram::SetWorldTransform(const TShared<USCamera>& camera)
+{
+	//initialise a matrics 
+	glm::mat4 matrixT = glm::mat4(1.0f);
+
+	//handle the view matrix
+
+	//handle the view matrix 
+	//matrixT = glm::translate(matrixT, camera->transform.position);
+	//translate & rotate the matrics based on the camera's forwars and up vector 
+	matrixT = glm::lookAt(
+		camera->transform.position,
+		camera->transform.position + camera->transform.Forward(),
+		camera->transform.Up()
+	);
+
+
+	//find the variable in the shader and update it 
+    int varID = glGetUniformLocation(m_programID, "view");
+
+	//update the value 
+	glUniformMatrix4fv(
+		varID, 1, GL_FALSE, glm::value_ptr(matrixT)
+	);
+
+	//handle the projection matrix
+
+	//set the projection to a perspective view 
+	matrixT = glm::perspective(
+		glm::radians(camera->fov),//the zoom of your camera 
+		camera->aspectRation,//how wide the view is 
+		camera->nearClip,//how close you can see 3D models
+		camera->farClip  //how far you can see 3D models - all other models will not render 
+	);
+
+	//find the variable in the shader for the projection matrix 
+	varID = glGetUniformLocation(m_programID, "projection");
+
+	//update the projection matrix in the shader 
+	glUniformMatrix4fv(
+		varID, 1, GL_FALSE, glm::value_ptr(matrixT)
+	);
+
+}
+
+bool UShaderProgram::ImportShaderByType(const UString& filePath, UEShaderType shaderType)
 {
 	//convert the shader to a string 
 	const std::string shaderStr = ConvertFileToString(filePath);
@@ -129,7 +198,7 @@ bool UShaderProgram::ImportShaderByType(const std::string& filePath, UEShaderTyp
 	return true;
 }
 
-std::string UShaderProgram::ConvertFileToString(const std::string& filePath)
+UString UShaderProgram::ConvertFileToString(const UString& filePath)
 {
 	// convert the file path into an ifstream 
 	std::ifstream shaderSource(filePath);

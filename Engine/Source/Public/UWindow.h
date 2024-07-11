@@ -1,8 +1,8 @@
 #pragma once
-#include <iostream>
-#include <string>
-
+#include "EngineTypes.h"
+#include "Math/USTransform.h"
 class UGraphicsEngine; 
+class UInput;
 
 struct LSWindowParmas
 {
@@ -53,9 +53,13 @@ public:
 
 	//check if the window has been set to close 
 	bool IsPendingClose() { return m_shouldClose; }
+	//listen for input 
+	void RegisterInput(const TShared<UInput>& m_input);
 
 	//render the graphics engine 
 	void Render();
+
+
 private:
 	//a ref to the window in sdl 
 	SDL_Window* m_sdlWindow;
@@ -64,6 +68,15 @@ private:
 	//determine is the window should close 
 	bool m_shouldClose;
 	//store the graphics engine 
-	std::unique_ptr< UGraphicsEngine> m_graphicsEngine;
+	TUnique< UGraphicsEngine> m_graphicsEngine;
+	//direction to move the camera
+	glm::vec3 m_cameraDirection;
+	//amout to rotate camera
+	glm::vec3 m_cameraRotation;
 
+	//can zoom
+	bool m_canZoom;
+
+	//is the use in input mode
+	bool m_inputMode;
 };

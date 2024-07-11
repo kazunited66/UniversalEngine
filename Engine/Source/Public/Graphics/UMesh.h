@@ -1,4 +1,6 @@
+ 
 #pragma once
+#include "EngineTypes.h"
 
 //system Libs
 #include <iostream>
@@ -7,6 +9,7 @@
 
 class UShaderProgram;
 struct USTransform;
+class UTexture; 
 
 
 struct USVertextData {
@@ -27,6 +30,9 @@ public:
 
 	//draw the mesh to the renderer 
 	void Render(const std::shared_ptr<UShaderProgram>& shader, const USTransform& transform);
+
+	//set the texture in the mesh 
+	void SetTexture(const TShared<UTexture>& texture) { m_texture = texture; }
 private:
 	//store the vertices
 	std::vector<USVertextData> m_vertices;
@@ -43,7 +49,7 @@ private:
 	//store the ID for the element array object 
 	uint32_t m_eao;
 
-
-
+	// texture for the mesh 
+	TShared<UTexture> m_texture; 
 
 };

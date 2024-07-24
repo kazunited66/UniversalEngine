@@ -9,6 +9,12 @@ struct USTransform {
 		rotation = glm::vec3(0.0f);
 		scale = glm:: vec3(1.0f);
 	}
+
+	USTransform(const glm::vec3& p, const glm::vec3& r, const glm::vec3& s) {
+		position = p;
+		rotation = r;
+		scale = s;
+	}
 	//get the forward vector of the local rotation 
 	glm::vec3 Forward() {
 		glm::vec3 forward;
@@ -47,9 +53,20 @@ struct USTransform {
 			glm::normalize(up);
 
 		return up;
-
-
 	}
+
+	USTransform operator+(const USTransform& other) const {
+		return {
+			position + other.position,
+			rotation + other.rotation,
+			scale + other.scale
+		};
+	}
+
+	USTransform& operator+=(const USTransform& other) {
+		return *this = *this + other; 
+	}
+
 	glm::vec3 position;
 	glm::vec3 rotation;
 	glm::vec3 scale;

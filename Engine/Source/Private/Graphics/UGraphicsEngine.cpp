@@ -13,7 +13,7 @@
 //test mesh for debug 
 
 TUnique<UModel> m_model;
-TUnique<UModel> m_model2;
+
 
 
 bool UGraphicsEngine::InitEngine(SDL_Window* sdlWindow, const bool& vsync)
@@ -87,12 +87,10 @@ bool UGraphicsEngine::InitEngine(SDL_Window* sdlWindow, const bool& vsync)
     
 	//DEBUG
 	m_model = TMakeUnique<UModel>();
-	m_model->MakeCube(defaultTexture);
-	m_model->GetTransform().position.x = 2.0f;
-
-	m_model2 = TMakeUnique<UModel>();
-	m_model2->MakeCube(defaultTexture);
-	m_model2->GetTransform().position.x = -2.0f;
+	m_model->ImportModel("Models/Lambo/Lambo.fbx");    
+	m_model->GetTransform().scale = glm::vec3(0.01f);
+	m_model->GetTransform().position.z += 100.0f;
+	//m_model->GetTransform().position.x = 2.0f;
 
 	//log the success if the graphics engine init
 	UDebug::Log("Successfully initialize graphics engine", LT_SUCCESS);
@@ -105,13 +103,13 @@ void UGraphicsEngine::Render(SDL_Window* sdlWindow)
 
 
 	//set a background colour 
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 	//clear the back last frame	
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	//m_model->GetTransform().rotation.x += 0.01f;
-	//m_model->GetTransform().rotation.y += 0.01f;
-	//m_model->GetTransform().rotation.z += 0.01f;
+    m_model->GetTransform().rotation.x += 0.01f;
+	m_model->GetTransform().rotation.y += 0.01f;
+	m_model->GetTransform().rotation.z += 0.01f;
 
 	//activate shader 
 	m_shader->Activate();
@@ -122,10 +120,6 @@ void UGraphicsEngine::Render(SDL_Window* sdlWindow)
 
 	//render custom graphics
 	m_model->Render(m_shader);
-
-	//m_model2->GetTransform().rotation.x += 0.01f;
-	m_model2->Render(m_shader);
-
 
 
 	//presend the frame to the window 

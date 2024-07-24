@@ -2,7 +2,8 @@
 
 //System Libs 
 #include <EngineTypes.h>
-
+//External Libs 
+#include<GLM/mat4x4.hpp>
 class UTexture; 
 struct USCamera;
 // enum to determain the type of shader 
@@ -25,6 +26,9 @@ public:
 	//activate the shader to update 
 	//you can't change value in a shader without activating it 
 	void Activate();
+
+	//set the transform of the model in the shader 
+	void SetMeshTransform(const glm::mat4& matTransform);
 
 	//set the transform of the model in the shader 
 	void SetModelTransform(const USTransform& transform);

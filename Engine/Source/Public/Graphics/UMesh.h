@@ -1,11 +1,15 @@
  
 #pragma once
 #include "EngineTypes.h"
+//#include "Math/USTransform.h"
+
+//External Libs 
+#include <GLM/mat4x4.hpp>
 
 //system Libs
-#include <iostream>
-#include <vector>
-#include <cstdint>
+//#include <iostream>
+//#include <vector>
+//#include <cstdint>
 
 class UShaderProgram;
 struct USTransform;
@@ -13,13 +17,27 @@ class UTexture;
 
 
 struct USVertextData {
-
+	//0 = x, 
+	// 1 = y, 
+	// 2 = z
 	float m_position[3] = { 0.0f, 0.0f, 0.0f };
-	float m_colour[3] = { 1.0f,1.0f,1.0f };
+
+	//0= r
+	//1 = g
+	//2 = b
+    float m_colour[3] = { 1.0f,1.0f,1.0f };
+
+	//0 = x, u, s
+	//1 = y, v, t
 	float m_textCords[2] = { 0.0f, 0.0f };
+
+	//0 = x
+	//1 = y
+	//2 = z
 	float m_normal[3] = { 0.0f, 0.0f, 0.0f };
 
 };
+
 class UMesh {
 public: 
 	UMesh();
@@ -33,6 +51,8 @@ public:
 
 	//set the texture in the mesh 
 	void SetTexture(const TShared<UTexture>& texture) { m_texture = texture; }
+	//set the transform of the mesh relative to the model 
+	void SetRelativeTransform(const glm::mat4& transform){ m_matTransform = transform;  }
 private:
 	//store the vertices
 	std::vector<USVertextData> m_vertices;
@@ -52,4 +72,7 @@ private:
 	// texture for the mesh 
 	TShared<UTexture> m_texture; 
 
+	//relative transform of each mesh 
+
+	glm::mat4 m_matTransform;
 };

@@ -6,6 +6,7 @@
 UMesh::UMesh()
 {
 	m_vao = m_vbo = m_eao = 0;
+	m_matTransform = glm::mat4(1.0f);
 	UDebug::Log("Mesh created");
 
 
@@ -157,6 +158,10 @@ void UMesh::Render(const std::shared_ptr<UShaderProgram>& shader, const USTransf
 	}
 	//update the transform of the mesh based on the model transform 
 	shader->SetModelTransform(transform); 
+    
+	//set the relative transform of the mesh in the shader 
+	shader->SetMeshTransform(m_matTransform);
+
 
 
 	//binding this aesh as the active vao

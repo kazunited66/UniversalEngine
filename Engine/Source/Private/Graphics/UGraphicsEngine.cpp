@@ -89,7 +89,7 @@ bool UGraphicsEngine::InitEngine(SDL_Window* sdlWindow, const bool& vsync)
 	m_model = TMakeUnique<UModel>();
 	m_model->ImportModel("Models/Lambo/Lambo.fbx");    
 	m_model->GetTransform().scale = glm::vec3(0.01f);
-	m_model->GetTransform().position.z += 100.0f;
+	//m_model->GetTransform().position.z += 80.0f;
 	//m_model->GetTransform().position.x = 2.0f;
 
 	//log the success if the graphics engine init

@@ -83,7 +83,7 @@ void UInput::UpdateInputs()
 	//run the ouse function nd 0 out relative movement 
 	if (!mouseMoved && (m_lastMotion.xrel != 0 || m_lastMotion.yrel != 0) ) {
 		OnMouseMove->Run(
-		static_cast<float>(e.motion.x),
+		static_cast<float>(m_lastMotion.x),
 		static_cast<float>(m_lastMotion.y),
 		0.0f, 0.0f
 		);

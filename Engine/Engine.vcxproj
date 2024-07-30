@@ -99,6 +99,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ExternalLibs\Includes\STB_IMAGE\stb_image.cpp" />
+    <ClCompile Include="Source\Private\Game\GameObjects\UObject.cpp" />
+    <ClCompile Include="Source\Private\Game\UGameEngine.cpp" />
     <ClCompile Include="Source\Private\Graphics\UGraphicsEngine.cpp" />
     <ClCompile Include="Source\Private\Graphics\UMesh.cpp" />
     <ClCompile Include="Source\Private\Graphics\UShaderProgram.cpp" />
@@ -112,6 +114,9 @@
     <ClInclude Include="ExternalLibs\Includes\STB_IMAGE\stb_image.h" />
     <ClInclude Include="Source\Public\Debug\UDebug.h" />
     <ClInclude Include="Source\Public\EngineTypes.h" />
+    <ClInclude Include="Source\Public\Game\GameObjects\UObject.h" />
+    <ClInclude Include="Source\Public\Game\GameObjects\UObjectChild.h" />
+    <ClInclude Include="Source\Public\Game\UGameEngine.h" />
     <ClInclude Include="Source\Public\Graphics\UGraphicsEngine.h" />
     <ClInclude Include="Source\Public\Graphics\UMesh.h" />
     <ClInclude Include="Source\Public\Graphics\UModel.h" />

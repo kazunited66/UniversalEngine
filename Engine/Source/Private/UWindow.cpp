@@ -146,8 +146,8 @@ void UWindow::RegisterInput(const TShared<UInput>& m_input)
 	//on mouse move rotate the camera if one exsist 
 	m_input->OnMouseMove->Bind([this](const float& x, const float& y, 
 		const float& xrel, const float& yrel) {
-			m_cameraRotation.x = -xrel;
-			m_cameraRotation.y = -yrel;
+			m_cameraRotation.x = yrel;
+			m_cameraRotation.y = xrel;
              
 		});
 	m_input->OnMouseScroll->Bind([this](const float& delta) {
@@ -184,7 +184,7 @@ void UWindow::Render()
 {
 	//render the graphics engine if one exists
 	if (m_graphicsEngine) {
-
+		//test if there is  a camera 
 		if (const auto& camRef = m_graphicsEngine->GetCamera().lock()) {
 			if (!m_inputMode) {
 				//translatea the camara based on input direction
@@ -193,6 +193,7 @@ void UWindow::Render()
 				camRef->Rotate(m_cameraRotation, glm::abs(m_cameraRotation));
 			}
 		}
+
 		m_graphicsEngine->Render(m_sdlWindow);
 	}
 }

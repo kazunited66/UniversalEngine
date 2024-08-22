@@ -15,6 +15,7 @@
 
 TWeak<UModel> m_model;
 TWeak<UModel> m_model2;
+TWeak<UModel> m_model3;
 TWeak<USPointLight> m_pointLight;
 
 
@@ -96,10 +97,16 @@ bool UGraphicsEngine::InitEngine(SDL_Window* sdlWindow, const bool& vsync)
 	//DEBUG
 	m_model = ImportModel("Models/Helmet3/Helmet3.fbx");
 	m_model.lock()->GetTransform().scale = glm::vec3(0.1f);
+	m_model.lock()->GetTransform().position = glm::vec3(0.0f, -1.5f, 0.0f);
 
 	//creating a texture 
 	TShared<UTexture> tex = TMakeShared<UTexture>();
 	tex->LoadTexture("face texture base colour", "Models/Helmet3/Textures/facetexture_Base_color.png");
+
+	//creating a second texture
+	TShared<UTexture> tex2 = TMakeShared<UTexture>();
+	tex2->LoadTexture("head base colour", "Models/Helmet3/Textures/Head_Base_color.png");
+
 
 	//creating a specilar texture 
 	TShared<UTexture> spectex = TMakeShared<UTexture>();
@@ -108,10 +115,6 @@ bool UGraphicsEngine::InitEngine(SDL_Window* sdlWindow, const bool& vsync)
 	//creating a specilar texture 
 	TShared<UTexture> spectex2 = TMakeShared<UTexture>();
 	spectex2->LoadTexture("head texture spec colour", "Models/Helmet3/Textures/Head_Specular.png");
-
-	//creating a second texture
-	TShared<UTexture> tex2 = TMakeShared<UTexture>();
-	tex2->LoadTexture("hesd base colour", "Models/Helmet3/Textures/Head_Base_color.png");
 
 	//creating a material 
 	TShared<USMaterial> mat = TMakeShared<USMaterial>();
@@ -130,13 +133,73 @@ bool UGraphicsEngine::InitEngine(SDL_Window* sdlWindow, const bool& vsync)
 
 
 
-	//m_model2=ImportModel("Models/Lambo/Lambo.fbx"); 
-	//m_model2.lock()->GetTransform().position = glm::vec3(0.0f, 15.0f, 0.0f);
 
 
-	//m_model2->GetTransform().scale = glm::vec3(0.01f); 
-	//m_model2->GetTransform().position.z += 80.0f;
-	//m_model2->GetTransform().position.x = 2.0f;
+	//import Military Knife
+	m_model2 = ImportModel("Models/MilitaryKnife/Military_Knife_low.fbx");
+	m_model2.lock()->GetTransform().scale = glm::vec3(0.1f);
+	m_model2.lock()->GetTransform().position = glm::vec3(1.0f, 2.0f, 0.0f);
+
+	//creating a texture 
+	TShared<UTexture> texKnife = TMakeShared<UTexture>();
+	texKnife->LoadTexture("bandle texture base colour", "Models/MilitaryKnife/textures/Blade_M_Base_color.png");
+
+	//creating second texture 
+	TShared<UTexture> texKnife2 = TMakeShared<UTexture>();
+	texKnife2->LoadTexture("bandle texture base colour", "Models/MilitaryKnife/textures/Handle_M_Base_color.png");
+
+	//creating a specilar texture 
+	TShared<UTexture> spectexKnife = TMakeShared<UTexture>();
+	spectexKnife->LoadTexture("bandle texture spec colour", "Models/Helmet3/textures/Blade_M_Specular.png");
+
+	//creating a specilar texture 
+	TShared<UTexture> spectexKnife2 = TMakeShared<UTexture>();
+	spectexKnife2->LoadTexture("bandle texture spec colour", "Models/Helmet3/textures/Handle_M_Specular.png");
+
+	//creating a material 
+	TShared<USMaterial> matKnife = TMakeShared<USMaterial>();
+	TShared<USMaterial> matKnife2 = TMakeShared<USMaterial>();
+	matKnife2->specularStrength = 0.1f;
+
+	//assigning the texture to the base colour map for the  material 
+	matKnife->m_baseColourMap = texKnife;
+	matKnife->m_specularMap = spectexKnife;
+	matKnife2->m_baseColourMap = texKnife2;
+	matKnife2->m_specularMap = spectexKnife2;
+
+	//setting the materials to the 0 slot in the model 
+	m_model2.lock()->SetMaterialBySlot(1, matKnife);
+	m_model2.lock()->SetMaterialBySlot(0, matKnife2);
+	
+
+
+	//import Cambot
+	m_model3=ImportModel("Models/Cambat/axe_finished.fbx"); 
+	m_model3.lock()->GetTransform().scale = glm::vec3(0.001f);
+	m_model3.lock()->GetTransform().position = glm::vec3(-2.0f, 1.0f, 0.0f);
+
+	//creating a texture 
+	TShared<UTexture> texCambat = TMakeShared<UTexture>();
+	texCambat->LoadTexture("checher texture base colour", "Models/Cambat/textures/UV_Checker_BaseColor.png");
+
+
+	//creating a specilar texture 
+	TShared<UTexture> spectexCambat = TMakeShared<UTexture>();
+	spectexCambat->LoadTexture("bandle texture spec colour", "Models/Cambat/textures/UV_Checker_Specular.png");
+
+
+	//creating a material 
+	TShared<USMaterial> matCambat = TMakeShared<USMaterial>();
+	matCambat->specularStrength = 0.1f;
+
+	//assigning the texture to the base colour map for the  material 
+	matCambat->m_baseColourMap = texCambat;
+	matCambat->m_specularMap = spectexCambat;
+
+	//setting the materials to the 0 slot in the model 
+	m_model3.lock()->SetMaterialBySlot(1, matKnife);
+	
+
 
 
 
@@ -173,6 +236,14 @@ void UGraphicsEngine::Render(SDL_Window* sdlWindow)
 	m_model.lock()->GetTransform().rotation.x += 0.01f;
 	m_model.lock()->GetTransform().rotation.y += 0.01f;
 	m_model.lock()->GetTransform().rotation.z += 0.01f;
+
+	m_model2.lock()->GetTransform().rotation.x += 0.01f;
+	m_model2.lock()->GetTransform().rotation.y += 0.01f;
+	m_model2.lock()->GetTransform().rotation.z += 0.01f;
+
+	m_model3.lock()->GetTransform().rotation.x += 0.01f;
+	m_model3.lock()->GetTransform().rotation.y += 0.01f;
+	m_model3.lock()->GetTransform().rotation.z += 0.01f;
 
 
 	//activate shader 

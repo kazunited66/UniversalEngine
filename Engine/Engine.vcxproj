@@ -122,6 +122,8 @@
     <ClInclude Include="Source\Public\Graphics\UModel.h" />
     <ClInclude Include="Source\Public\Graphics\USCamera.h" />
     <ClInclude Include="Source\Public\Graphics\UShaderProgram.h" />
+    <ClInclude Include="Source\Public\Graphics\USLight.h" />
+    <ClInclude Include="Source\Public\Graphics\USMaterial.h" />
     <ClInclude Include="Source\Public\Graphics\UTexture.h" />
     <ClInclude Include="Source\Public\Listeners\UEvents.h" />
     <ClInclude Include="Source\Public\Listeners\UInput.h" />

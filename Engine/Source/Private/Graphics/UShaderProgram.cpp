@@ -3,6 +3,8 @@
 #include <Math/USTransform.h>
 #include <Graphics/UTexture.h>
 #include <Graphics/USCamera.h>
+#include "Graphics/USLight.h"
+#include "Graphics/USMaterial.h"
 
 //External Libs
 #include <GLEW/glew.h>
@@ -14,6 +16,9 @@
 #include <sstream>
 
 #define UGET_GREW_ERROR reinterpret_cast<const char*>(glewGetErrorString(glGetError()));
+//const value for light amounts
+const UUi32 maxDirLights = 2;
+const UUi32 maxPoinLight = 20;
 
 UShaderProgram::UShaderProgram()
 {
@@ -34,11 +39,11 @@ bool UShaderProgram::InitShader(const UString& vShaderPath, const UString& fShad
 	if (m_programID == 0) {
 		const std::string errorMsg = UGET_GREW_ERROR;
 		UDebug::Log("Shader failed to initialize, could't create program: " + errorMsg);
-		return false; 
+		return false;
 	}
 
 	if (!ImportShaderByType(vShaderPath, ST_VERTEXT) || !ImportShaderByType(fShaderPath, ST_FRAGMENT)) {
-		UDebug::Log("Shader failed to initialize, could't import shaders " );
+		UDebug::Log("Shader failed to initialize, could't import shaders ");
 		return false;
 	}
 	return LinkToGPU();
@@ -71,9 +76,9 @@ void UShaderProgram::SetModelTransform(const USTransform& transform)
 	matrixT = glm::translate(matrixT, transform.position);
 
 	//rotate
-	matrixT = glm::rotate(matrixT, glm::radians(transform.rotation.x), glm::vec3(1.0f,0.0f,0.0f));
-	matrixT = glm::rotate(matrixT, glm::radians(transform.rotation.y), glm::vec3(0.0f,1.0f,0.0f));
-	matrixT = glm::rotate(matrixT, glm::radians(transform.rotation.z), glm::vec3(0.0f,0.0f,1.0f));
+	matrixT = glm::rotate(matrixT, glm::radians(transform.rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+	matrixT = glm::rotate(matrixT, glm::radians(transform.rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+	matrixT = glm::rotate(matrixT, glm::radians(transform.rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
 	//scale the matrix 
 	matrixT = glm::scale(matrixT, transform.scale);
@@ -84,28 +89,178 @@ void UShaderProgram::SetModelTransform(const USTransform& transform)
 	//update the value 
 	glUniformMatrix4fv(
 		varID, 1, GL_FALSE, glm::value_ptr(matrixT)
-		);
+	);
 }
 
 void UShaderProgram::RunTexture(const TShared<UTexture>& texture, const UUi32& slot)
 {
-	// bind the texture 
-	texture->BindTexture(slot); 
 
-	//the id for the variable in the shader 
-	int varID = 0; 
+}
 
-	//get id deppending on the slot 
-	switch (slot) {
-	case 0:
-		varID = glGetUniformLocation(m_programID, "colourMap");
-		break;
-	default:
-		break;
+void UShaderProgram::SetLights(const TArray<TShared<USLight>>& lights)
+{
+	UUi32 dirLights = 0;
+	UUi32 pointLights = 0;
+	int varID = 0;
+	//add a dir light and use a index 
+	UString lightIndexStr = "";
+
+
+	//loop thorugh all of lights and add the to the shader 
+	for (UUi32 i = 0; i < lights.size(); ++i) {
+
+		if (const auto& lightRef = std::dynamic_pointer_cast<USDirLight>(lights[i])) {
+			//ignore the light if we have alredy maxed out 
+			if (dirLights >= maxDirLights) {
+				continue;
+			}
+
+			//add a dir light and use a index 
+			lightIndexStr = "dirLights[" + std::to_string(dirLights) + "]";
+
+			//_____COLOUR 
+			//get the colour variable from the dir light struct in the shader 
+			varID = glGetUniformLocation(m_programID,
+				(lightIndexStr + ".colour").c_str());
+
+			//change the colour 
+			glUniform3fv(varID, 1, glm::value_ptr(lightRef->colour));
+
+			//_____AMBIENT
+			//get the ambient variable from the fir light in the shader 
+			varID = glGetUniformLocation(m_programID,
+				(lightIndexStr + ".ambient").c_str());
+			//change theabmient ambient 
+			glUniform3fv(varID, 1, glm::value_ptr(lightRef->ambient));
+
+			//_____DIRECTION
+			//get the direction variable from the fir light in the shader 
+			varID = glGetUniformLocation(m_programID,
+				(lightIndexStr + ".direction").c_str());
+			//change theabmient direction 
+			glUniform3fv(varID, 1, glm::value_ptr(lightRef->direction));
+
+
+			//_____INTENSITY
+			//get the colour variable from the fir light in the shader 
+			varID = glGetUniformLocation(m_programID,
+				(lightIndexStr + ".intensity").c_str());
+
+			//change theabmient intensity 
+			glUniform1f(varID, lightRef->intensity);
+
+
+			//increase the dirLights count 
+			++dirLights;
+			continue;
+		}
+
+		if (const auto& lightRef = std::dynamic_pointer_cast<USPointLight>(lights[i])) {
+			//ensure only max light 
+			if (pointLights >= maxPoinLight) {
+				continue;
+			}
+			//add a dir light and use a index 
+			lightIndexStr = "pointLights[" + std::to_string(pointLights) + "]";
+
+			//_____COLOUR 
+			//get the colour variable from the dir light struct in the shader 
+			varID = glGetUniformLocation(m_programID,
+				(lightIndexStr + ".colour").c_str());
+
+			//change the colour 
+			glUniform3fv(varID, 1, glm::value_ptr(lightRef->colour));
+
+			//_____POSITION
+			//get the shader variable id
+			varID = glGetUniformLocation(m_programID,
+				(lightIndexStr + ".position").c_str());
+
+			//update the shader value 
+			glUniform3fv(varID, 1, glm::value_ptr(lightRef->position));
+
+			//_____INTENSITY
+			//get the colour variable from the fir light in the shader 
+			varID = glGetUniformLocation(m_programID,
+				(lightIndexStr + ".intensity").c_str());
+
+			//change theabmient intensity 
+			glUniform1f(varID, lightRef->intensity);
+
+			//_____LINEAR ATTENUATION
+			//get the variable id
+			varID = glGetUniformLocation(m_programID,
+				(lightIndexStr + ".linear").c_str());
+
+			//change the vale 
+			glUniform1f(varID, lightRef->linear);
+
+			//_____QUADRATIC ATTENUATION
+			//get the variable id
+			varID = glGetUniformLocation(m_programID,
+				(lightIndexStr + ".quadratic").c_str());
+
+			//change the vale 
+			glUniform1f(varID, lightRef->quadratic);
+
+			//increment the point light index 
+			++pointLights;
+		}
 	}
 
+
+}
+
+void UShaderProgram::SetMaterial(const TShared<USMaterial>& material)
+{
+	if (material == nullptr)
+		return;
+
+
+	//the id for the variable in the shader 
+	int varID = 0;
+
+
+	//______BASE COLOUR 
+	if (material->m_baseColourMap) {
+		// bind the texture to the 0 index 
+		material->m_baseColourMap->BindTexture(0);
+
+		//get the base clour map id 
+		varID = glGetUniformLocation(m_programID, "material.baseColourMap");
+
+		//update the shader 
+		glUniform1i(varID, 0);
+	}
+
+
+	//______SPECULAR MAP 
+	if (material->m_specularMap) {
+		// bind the texture to the 1 index 
+		material->m_specularMap->BindTexture(1);
+
+		//get the base clour map id 
+		varID = glGetUniformLocation(m_programID, "material.specularMap");
+
+		//update the shader 
+		glUniform1f(varID, 1);
+
+	}
+
+
+	//______SHININESS
+	varID = glGetUniformLocation(m_programID, "material.shininess");
+
 	//update the shader 
-	glUniform1i(varID, slot);  
+	glUniform1f(varID, material->shininess);
+
+	//______SPECULAR STRENGH
+	varID = glGetUniformLocation(m_programID, "material.specularStrength");
+
+	//update the shader 
+	glUniform1f(varID, material->specularStrength);
+
+
 }
 
 void UShaderProgram::SetWorldTransform(const TShared<USCamera>& camera)
@@ -126,7 +281,7 @@ void UShaderProgram::SetWorldTransform(const TShared<USCamera>& camera)
 
 
 	//find the variable in the shader and update it 
-    int varID = glGetUniformLocation(m_programID, "view");
+	int varID = glGetUniformLocation(m_programID, "view");
 
 	//update the value 
 	glUniformMatrix4fv(
@@ -166,7 +321,7 @@ bool UShaderProgram::ImportShaderByType(const UString& filePath, UEShaderType sh
 	}
 
 	//set and create an id for the shader based on the shader type 
-	switch (shaderType) 
+	switch (shaderType)
 	{
 	case ST_VERTEXT:
 		m_shaderIDs[shaderType] = glCreateShader(GL_VERTEX_SHADER);
@@ -179,7 +334,7 @@ bool UShaderProgram::ImportShaderByType(const UString& filePath, UEShaderType sh
 	}
 
 	//make sure there is a string path 
-	if (m_shaderIDs[shaderType]==0) {
+	if (m_shaderIDs[shaderType] == 0) {
 		//erro that the string failed to import 
 		const std::string errorMsg = UGET_GREW_ERROR;
 		UDebug::Log("Shader program could not assign shader id: " + errorMsg, LT_ERROR);

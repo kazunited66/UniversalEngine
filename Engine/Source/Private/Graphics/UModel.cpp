@@ -6,117 +6,10 @@
 #include <ASSIMP/postprocess.h>
 #include <ASSIMP/mesh.h>
 
-const std::vector<USVertextData> polyVData = {
-	//x    //y    //z     //r    //g   //b    //tx   //ty 
-  { {-0.5f, 0.5f, 0.0f }, {1.0f, 1.0f, 1.0f }, {0.0f, 1.0f} }, //vertex data 1 - top left - 0
-  { {0.5f,  0.5f, 0.0f }, {1.0f, 1.0f, 1.0f }, {1.0f, 1.0f} }, //vertex data 2 - top right - 1  
-  { {-0.5f, -0.5, 0.0f }, {1.0f, 1.0f, 1.0f }, {0.0f, 0.0f} }, //vertex data 3 - bottom left - 2
-  { {0.5f, -0.5f, 0.0f }, {1.0f, 1.0f, 1.0f }, {1.0f, 0.0f} }  //vertex data 4 - bottom right - 3 
-};
-
-const std::vector<uint32_t> polyIData = {
-	0, 1, 2, //triangle 1
-	1, 2, 3  //triangle 2
-};
-
-
-const std::vector<USVertextData> cubeVData = {
-	// x   // y   // z     // r   // g  // b    // tx  // ty
-{ { -1.0f,  1.0f,  1.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f } }, // z vertex data 1 - f top left - 0
-{ {	 1.0f,  1.0f,  1.0f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f } }, // z vertex data 2 - f top right - 1
-{ { -1.0f, -1.0f,  1.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f } }, // z vertex data 3 - f bottom left - 2
-{ {  1.0f, -1.0f,  1.0f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 0.0f } }, // z vertex data 4 - f bottom right - 3
-
-{ {  1.0f,  1.0f, -1.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f } }, // z vertex data 5 - b top right - 4
-{ {	-1.0f,  1.0f, -1.0f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f } }, // z vertex data 6 - b top left - 5
-{ {  1.0f, -1.0f, -1.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f } }, // z vertex data 7 - b bottom right - 6
-{ { -1.0f, -1.0f, -1.0f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 0.0f } }, // z vertex data 8 - b bottom left - 7
-
-{ { -1.0f,  1.0f,  1.0f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f } }, // x vertex data 9 - f top left - 8
-{ {	 1.0f,  1.0f,  1.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f } }, // x vertex data 10 - f top right - 9
-{ { -1.0f, -1.0f,  1.0f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 0.0f } }, // x vertex data 11 - f bottom left - 10
-{ {  1.0f, -1.0f,  1.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f } }, // x vertex data 12 - f bottom right - 11
-
-{ {  1.0f,  1.0f, -1.0f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f } }, // x vertex data 13 - b top right - 12
-{ {	-1.0f,  1.0f, -1.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f } }, // x vertex data 14 - b top left - 13
-{ {  1.0f, -1.0f, -1.0f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 0.0f } }, // x vertex data 15 - b bottom right - 14
-{ { -1.0f, -1.0f, -1.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f } }, // x vertex data 16 - b bottom left - 15
-
-{ { -1.0f,  1.0f,  1.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f } }, // y vertex data 17 - f top left - 16
-{ {	 1.0f,  1.0f,  1.0f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 0.0f } }, // y vertex data 18 - f top right - 17
-{ { -1.0f, -1.0f,  1.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f } }, // y vertex data 19 - f bottom left - 18
-{ {  1.0f, -1.0f,  1.0f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f } }, // y vertex data 20 - f bottom right - 19
-
-{ {  1.0f,  1.0f, -1.0f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f } }, // y vertex data 21 - b top right - 20
-{ {	-1.0f,  1.0f, -1.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f } }, // y vertex data 22 - b top left - 21
-{ {  1.0f, -1.0f, -1.0f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 0.0f } }, // y vertex data 23 - b bottom right - 22
-{ { -1.0f, -1.0f, -1.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f } } // y vertex data 24 - b bottom left - 23
-};
-
-const std::vector<uint32_t> cubeIData = {
-	0, 1, 2, // f triangle 1
-	1, 2, 3, // f triangle 2
-
-	4, 5, 6, // b triangle 1
-	5, 6, 7, // b triangle 2
-
-	13, 8, 10, // l triangle 1
-	13, 15, 10, // l triangle 2
-
-	9, 12, 14, // r triangle 1
-	9, 14, 11, // r triangle 2
-
-	21, 20, 16, // t triangle 1
-	20, 17, 16, // t triangle 2
-
-	18, 19, 23, // bt triangle 1
-	23, 19, 22 // bt triangle 2
-};
-
-void UModel::MakePoly(const TShared<UTexture>& texture)
-{
-	//crete the debug mesh
-	TUnique<UMesh> mesh2 = TMakeUnique<UMesh>();
-
-
-	//create the mesh and test if it failed 
-	if (mesh2->CreateMesh(polyVData, polyIData)) {
-		UDebug::Log("Failed to create poly mesh");
-	}
-
-	//add the texture and add it to the mesh stack 
-
-	mesh2->SetTexture(texture);
-	//std::move will move the reference from the previous reference to a new one - 
-	// - without destroying or copying the reference
-	m_meshStack.push_back(std::move(mesh2));
-}
-
-void UModel::MakeCube(const TShared<UTexture>& texture)
-{
-	//crete the debug mesh
-	TUnique<UMesh> mesh2 = TMakeUnique<UMesh>();
-
-
-	//create the mesh and test if it failed 
-	if (mesh2->CreateMesh(cubeVData, cubeIData)) {
-		UDebug::Log("Failed to create cube mesh");
-	}
-
-	//add the texture and add it to the mesh stack 
-
-	mesh2->SetTexture(texture);
-	//std::move will move the reference from the previous reference to a new one - 
-	// - without destroying or copying the reference
-	m_meshStack.push_back(std::move(mesh2));
-
-	
-}
-
 void UModel::ImportModel(const UString& filePath)
 {
 	//crete an assimp importer 
-	Assimp:: Importer importer;
+	Assimp::Importer importer;
 
 	//import the file and convert the model to an assimp scene 
 	//add post processing flag triangulate to make sure the model is triangle 
@@ -138,28 +31,49 @@ void UModel::ImportModel(const UString& filePath)
 	sceneTransform.FromEulerAnglesXYZ({ 0.0f, 0.0f, 0.0f });
 	//set the scale to x1, y1, z1
 	aiMatrix4x4::Scaling({ 1.0f, 1.0f, 1.0f }, sceneTransform);
+
+	//meshes counts 
+	UUi32 meshesCreated = 0;
+
 	//find all meshes in the scene and fail if any of the fail
-	if (!FindImportMeshes(*scene->mRootNode, *scene, sceneTransform)) {
+	if (!FindImportMeshes(*scene->mRootNode, *scene, sceneTransform, &meshesCreated)) {
 		UDebug::Log("Model failed to convert ASSIMP scene" + filePath, LT_ERROR);
 		return;
 	}
 
+	//set the materials srtack size to the amount of materials on the model 
+	m_materialsStack.resize(scene->mNumMaterials);
+
+
 	//log the success of the model 
-	UDebug::Log("Model successfully imported: " + filePath, LT_SUCCESS);
+	UDebug::Log("Model successfully imported with (" + std::to_string(meshesCreated) + " ) + meshes: "
+		+ filePath, LT_SUCCESS);
 }
 
-void UModel::Render(const TShared<UShaderProgram>& shader)
+void UModel::Render(const TShared<UShaderProgram>& shader, const TArray<TShared<USLight>>& lights)
 {
 	for (const auto& mesh2 : m_meshStack) {
-		mesh2->Render(shader, m_transform);
+		mesh2->Render(shader, m_transform, lights, m_materialsStack[mesh2->materialIndex]);
 	}
 
-	
+}
+
+void UModel::SetMaterialBySlot(unsigned int slot, TShared<USMaterial>& material)
+{
+	//showe that the material slot exsist 
+	if (slot >= m_materialsStack.size()) {
+		UDebug::Log("No material slot exsists at that index: " + std::to_string(slot), LT_WARN);
+		return;
+	}
+
+	//change the material if it does 
+	m_materialsStack[slot] = material;
 }
 
 bool UModel::FindImportMeshes(const aiNode& node, const aiScene& scene,
-	const aiMatrix4x4& parentTransform)
+	const aiMatrix4x4& parentTransform, UUi32* meshesCreated)
 {
+
 	//looping throug all the meshes in the node
 	for (UUi32 i = 0; i < node.mNumMeshes; ++i) {
 		// TO DO: Convert aiMesh to UMesh
@@ -193,12 +107,12 @@ bool UModel::FindImportMeshes(const aiNode& node, const aiScene& scene,
 			//the first array index is the set [0]
 			//the second array index is the vertex data 
 
-			if (aMesh->HasTextureCoords(j)) {
+			if (aMesh->HasTextureCoords(0)) {
 				vertex.m_textCords[0] = aMesh->mTextureCoords[0][j].x;
 				vertex.m_textCords[1] = aMesh->mTextureCoords[0][j].y;
 
 			}
-				
+
 			//get the normals  for the model 
 			vertex.m_normal[0] = aMesh->mNormals[j].x;
 			vertex.m_normal[1] = aMesh->mNormals[j].y;
@@ -213,7 +127,7 @@ bool UModel::FindImportMeshes(const aiNode& node, const aiScene& scene,
 		if (meshVertices.size() < 3) {
 			UDebug::Log("Mesh has lesser than 3 vertices", LT_ERROR);
 
-				return false;
+			return false;
 
 		}
 		//loop through all of the faces on the parent transform 
@@ -230,14 +144,16 @@ bool UModel::FindImportMeshes(const aiNode& node, const aiScene& scene,
 
 		//crete the mesh object 
 		auto lMesh = TMakeUnique<UMesh>();
-		
-		
+
+
 		// test if it failed 
 		if (!lMesh->CreateMesh(meshVertices, meshIndices)) {
 			UDebug::Log("Mesh failed to convert from A mesh to L mesh", LT_ERROR);
 			return false;
 		}
 
+		//get the material index from the assimp mesh and set our mesh index to the same 
+		lMesh->materialIndex = aMesh->mMaterialIndex;
 
 		//set the ralative transformation for the mesh 
 		aiMatrix4x4 relTransform = parentTransform * node.mTransformation;
@@ -259,10 +175,13 @@ bool UModel::FindImportMeshes(const aiNode& node, const aiScene& scene,
 		matTransform[2][3] = relTransform.d3; matTransform[3][3] = relTransform.d4;
 
 		//update the relative transform on the mesh 
-		lMesh->SetRelativeTransform(matTransform); 
+		lMesh->SetRelativeTransform(matTransform);
 
 		//add the texture and add it to the mesh stack 
 		m_meshStack.push_back(std::move(lMesh));
+
+		//counst the meshes created
+		++*meshesCreated;
 
 	}
 
@@ -272,7 +191,7 @@ bool UModel::FindImportMeshes(const aiNode& node, const aiScene& scene,
 
 	// loop through all of the child nodes inside this node 
 	for (UUi32 i = 0; i < node.mNumChildren; ++i) {
-		if (!FindImportMeshes(*node.mChildren[i], scene, nodeRelTransform))
+		if (!FindImportMeshes(*node.mChildren[i], scene, nodeRelTransform, meshesCreated))
 			return false;
 	}
 

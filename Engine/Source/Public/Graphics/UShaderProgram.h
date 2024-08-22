@@ -4,19 +4,20 @@
 #include <EngineTypes.h>
 //External Libs 
 #include<GLM/mat4x4.hpp>
-class UTexture; 
+class UTexture;
 struct USCamera;
 // enum to determain the type of shader 
-enum UEShaderType : UUi8{
+enum UEShaderType : UUi8 {
 	ST_VERTEXT = 0U,
 	ST_FRAGMENT
 };
 
 struct USTransform;
-
+struct USLight;
+struct USMaterial;
 
 class UShaderProgram {
-public: 
+public:
 	UShaderProgram();
 	~UShaderProgram();
 
@@ -33,21 +34,27 @@ public:
 	//set the transform of the model in the shader 
 	void SetModelTransform(const USTransform& transform);
 
-	//set a texture in shader based on the slot 
-	void RunTexture(const TShared < UTexture>& texture, const UUi32& slot); 
-
 	//set the 3D coordinates for the model 
 	void SetWorldTransform(const TShared<USCamera>& camera);
 
-private: 
+	//set a texture in shader based on the slot 
+	void RunTexture(const TShared < UTexture>& texture, const UUi32& slot);
+
+	void SetLights(const TArray<TShared<USLight>>& lights);
+
+	//set the material in the shader 
+	void SetMaterial(const TShared<USMaterial>& material);
+
+
+private:
 	//import a shader based on the shader type 
 	bool ImportShaderByType(const UString& filePath, UEShaderType shaderType);
 
 	//convert a file into a string 
-	UString ConvertFileToString(const UString& filePath);\
+	UString ConvertFileToString(const UString& filePath); \
 
-	//link the shader to the GPU through open gl 
-	bool LinkToGPU();
+		//link the shader to the GPU through open gl 
+		bool LinkToGPU();
 
 private:
 	//store the file paths 

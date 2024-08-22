@@ -4,6 +4,7 @@
 #include "Math/USTransform.h"
 #include "Graphics/Utexture.h"
 #include "Graphics/USCamera.h"
+#include "Graphics/USLight.h"
 
 //External Libs
 #include <GLEW/glew.h>
@@ -12,8 +13,9 @@
 
 //test mesh for debug 
 
-TUnique<UModel> m_model;
-
+TWeak<UModel> m_model;
+TWeak<UModel> m_model2;
+TWeak<USPointLight> m_pointLight;
 
 
 bool UGraphicsEngine::InitEngine(SDL_Window* sdlWindow, const bool& vsync)
@@ -55,19 +57,25 @@ bool UGraphicsEngine::InitEngine(SDL_Window* sdlWindow, const bool& vsync)
 
 	//Initilaise glew
 	GLenum glewResult = glewInit();
+
 	//test if glew failed 
 	if (glewResult != GLEW_OK) {
 		std::string errorMsg = reinterpret_cast<const char*>(glewGetErrorString(glewResult));
 		UDebug::Log("Graphics engine failed to initialise GLEW: " + errorMsg);
 	}
 
+	glEnable(GL_DEPTH_TEST);
+
+
 	//attempt to init shader and test if failed 
 	m_shader = TMakeShared<UShaderProgram>();
+
+
 	if (!m_shader->InitShader(
 		"Shaders/SimpleShader/SimpleShader.vertex",
 		"Shaders/SimpleShader/SimpleShader.frag"
 
-		)) {
+	)) {
 		UDebug::Log("Graphic engine failed to initialise due to shader failure");
 		return false;
 	}
@@ -84,17 +92,71 @@ bool UGraphicsEngine::InitEngine(SDL_Window* sdlWindow, const bool& vsync)
 		UDebug::Log("Graphics Engine default texture failed to load ", LT_ERROR);
 
 	}
-    
+
 	//DEBUG
-	m_model = TMakeUnique<UModel>();
-	m_model->ImportModel("Models/Lambo/Lambo.fbx");    
-	m_model->GetTransform().scale = glm::vec3(0.01f);
-	//m_model->GetTransform().position.z += 80.0f;
-	//m_model->GetTransform().position.x = 2.0f;
+	m_model = ImportModel("Models/Helmet3/Helmet3.fbx");
+	m_model.lock()->GetTransform().scale = glm::vec3(0.1f);
+
+	//creating a texture 
+	TShared<UTexture> tex = TMakeShared<UTexture>();
+	tex->LoadTexture("face texture base colour", "Models/Helmet3/Textures/facetexture_Base_color.png");
+
+	//creating a specilar texture 
+	TShared<UTexture> spectex = TMakeShared<UTexture>();
+	spectex->LoadTexture("face texture spec colour", "Models/Helmet3/Textures/facetexture_Specular.png");
+
+	//creating a specilar texture 
+	TShared<UTexture> spectex2 = TMakeShared<UTexture>();
+	spectex2->LoadTexture("head texture spec colour", "Models/Helmet3/Textures/Head_Specular.png");
+
+	//creating a second texture
+	TShared<UTexture> tex2 = TMakeShared<UTexture>();
+	tex2->LoadTexture("hesd base colour", "Models/Helmet3/Textures/Head_Base_color.png");
+
+	//creating a material 
+	TShared<USMaterial> mat = TMakeShared<USMaterial>();
+	TShared<USMaterial> mat2 = TMakeShared<USMaterial>();
+	mat2->specularStrength = 0.1f; 
+
+	//assigning the texture to the base colour map for the  material 
+	mat->m_baseColourMap = tex;
+	mat->m_specularMap = spectex;
+	mat2->m_baseColourMap = tex2;
+	mat->m_specularMap = spectex2;
+
+	//setting the materials to the 0 slot in the model 
+	m_model.lock()->SetMaterialBySlot(1, mat);
+	m_model.lock()->SetMaterialBySlot(0, mat2);
+
+
+
+	//m_model2=ImportModel("Models/Lambo/Lambo.fbx"); 
+	//m_model2.lock()->GetTransform().position = glm::vec3(0.0f, 15.0f, 0.0f);
+
+
+	//m_model2->GetTransform().scale = glm::vec3(0.01f); 
+	//m_model2->GetTransform().position.z += 80.0f;
+	//m_model2->GetTransform().position.x = 2.0f;
+
+
+
+	const auto& dirLight = CreateDirLight();
+
+	if (const auto& lightRef = dirLight.lock()) {
+		lightRef->colour = glm::vec3(1.0f, 1.0f, 0.0f);
+		lightRef->direction = glm::vec3(0.0f, -1.0f, 0.0f);
+		lightRef->ambient = glm::vec3(0.1f);
+	}
+
+	const auto& pointLight = CreatePointLight();
+	if (const auto& lightRef = pointLight.lock()) {
+		lightRef->colour = glm::vec3(0.0f, 0.0f, 1.0f);
+		lightRef->position = glm::vec3(5.0f,0.0f,0.0f);
+	}
 
 	//log the success if the graphics engine init
 	UDebug::Log("Successfully initialize graphics engine", LT_SUCCESS);
-	
+
 	return true;
 }
 
@@ -103,13 +165,15 @@ void UGraphicsEngine::Render(SDL_Window* sdlWindow)
 
 
 	//set a background colour 
-	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-	//clear the back last frame	
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-    m_model->GetTransform().rotation.x += 0.01f;
-	m_model->GetTransform().rotation.y += 0.01f;
-	m_model->GetTransform().rotation.z += 0.01f;
+	//clear the back last frame	
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	m_model.lock()->GetTransform().rotation.x += 0.01f;
+	m_model.lock()->GetTransform().rotation.y += 0.01f;
+	m_model.lock()->GetTransform().rotation.z += 0.01f;
+
 
 	//activate shader 
 	m_shader->Activate();
@@ -119,12 +183,45 @@ void UGraphicsEngine::Render(SDL_Window* sdlWindow)
 	m_shader->SetWorldTransform(m_camera);
 
 	//render custom graphics
-	m_model->Render(m_shader);
+	for (const auto& modelRef : m_models) {
+		modelRef->Render(m_shader, m_lights);
+	}
+
 
 
 	//presend the frame to the window 
 	//swqaping the back buffer with thre front buffer
 	SDL_GL_SwapWindow(sdlWindow);
 
+}
+
+TWeak<USPointLight> UGraphicsEngine::CreatePointLight()
+{
+	const auto& newLight = TMakeShared<USPointLight>();
+	m_lights.push_back(newLight);
+	return newLight;
+}
+
+TWeak<USDirLight> UGraphicsEngine::CreateDirLight()
+{
+
+	const auto& newLight = TMakeShared<USDirLight>();
+	m_lights.push_back(newLight);
+	return newLight;
+}
+
+TWeak<UModel> UGraphicsEngine::ImportModel(const UString& path)
+{
+	const auto& newModel = TMakeShared<UModel>();
+	newModel->ImportModel(path);
+	m_models.push_back(newModel);
+
+	return newModel;
+}
+
+TShared<USMaterial> UGraphicsEngine::CreateMaterial()
+{
+
+	return TMakeShared<USMaterial>();
 }
 

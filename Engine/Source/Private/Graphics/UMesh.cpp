@@ -7,14 +7,12 @@ UMesh::UMesh()
 {
 	m_vao = m_vbo = m_eao = 0;
 	m_matTransform = glm::mat4(1.0f);
-	UDebug::Log("Mesh created");
-
 
 }
 
 UMesh::~UMesh()
 {
-	UDebug::Log("Mesh destroyed");
+
 }
 
 bool UMesh::CreateMesh(const std::vector<USVertextData> vertices, const std::vector<uint32_t>& indices)
@@ -31,7 +29,7 @@ bool UMesh::CreateMesh(const std::vector<USVertextData> vertices, const std::vec
 	//test if the vao failed 
 	if (m_vao == 0) {
 		//convert error into a readabble string 
-		std::string errorMsg = reinterpret_cast<const char*>( glewGetErrorString(glGetError()));
+		std::string errorMsg = reinterpret_cast<const char*>(glewGetErrorString(glGetError()));
 		UDebug::Log("Mesh failed to create VAO: " + errorMsg, LT_WARN);
 		return false;
 	}
@@ -96,7 +94,7 @@ bool UMesh::CreateMesh(const std::vector<USVertextData> vertices, const std::vec
 		GL_FALSE,//should we normalise the values, generally no
 		sizeof(USVertextData),//how big is each data array in a VertexData
 		nullptr//how many numbers to skip 
-		);
+	);
 
 	//pass out the vertex data in sperate formats 
 	glEnableVertexAttribArray(0);
@@ -109,7 +107,7 @@ bool UMesh::CreateMesh(const std::vector<USVertextData> vertices, const std::vec
 		GL_FALSE,//should we normalise the values, generally no
 		sizeof(USVertextData),//how big is each data array in a VertexData
 		nullptr//how many numbers to skip 
-		);
+	);
 
 
 
@@ -139,30 +137,40 @@ bool UMesh::CreateMesh(const std::vector<USVertextData> vertices, const std::vec
 		(void*)(sizeof(float) * 6)//how many numbers to skip in byts
 	);
 
+	//pass out the vertex data in sperate formats 
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(
+		3,//location to store data ain the attribute array 
+		3,//how many number to pass into the attribute array index 
+		GL_FLOAT,//the type of data to store 
+		GL_FALSE,//should we normalise the values, generally no
+		sizeof(USVertextData),//how big is each data array in a VertexData
+		(void*)(sizeof(float) * 8)//how many numbers to skip in byts
+	);
+
 
 
 	//common practice to clear the vao from the GPU 
 	glBindVertexArray(0);
-	
+
 	return true;
 }
 
-void UMesh::Render(const std::shared_ptr<UShaderProgram>& shader, const USTransform& transform)
+void UMesh::Render(const std::shared_ptr<UShaderProgram>& shader, const USTransform& transform, const TArray<TShared<USLight>>& lights, const TShared<USMaterial>& material)
 {
-	
-    //does a texture exsit 
-	if (m_texture) {
-		//run the texture 
-		shader->RunTexture(m_texture, 0);
 
-	}
+
+	//update material in shder  
+	shader->SetMaterial(material);
+
 	//update the transform of the mesh based on the model transform 
-	shader->SetModelTransform(transform); 
-    
+	shader->SetModelTransform(transform);
+
 	//set the relative transform of the mesh in the shader 
 	shader->SetMeshTransform(m_matTransform);
 
-
+	//set the lights in the shader for the mesh 
+	shader->SetLights(lights);
 
 	//binding this aesh as the active vao
 	glBindVertexArray(m_vao);

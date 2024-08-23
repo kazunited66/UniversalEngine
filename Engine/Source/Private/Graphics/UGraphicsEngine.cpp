@@ -13,9 +13,7 @@
 
 //test mesh for debug 
 
-TWeak<UModel> m_model;
-TWeak<UModel> m_model2;
-TWeak<UModel> m_model3;
+
 TWeak<USPointLight> m_pointLight;
 
 
@@ -83,7 +81,7 @@ bool UGraphicsEngine::InitEngine(SDL_Window* sdlWindow, const bool& vsync)
 
 	//create the camera 
 	m_camera = TMakeShared<USCamera>();
-	m_camera->transform.position.z -= 5.0f;
+	m_camera->transform.position.z -= 50.0f;
 
 	//create the texture object 
 	TShared<UTexture> defaultTexture = TMakeShared<UTexture>();
@@ -93,11 +91,17 @@ bool UGraphicsEngine::InitEngine(SDL_Window* sdlWindow, const bool& vsync)
 		UDebug::Log("Graphics Engine default texture failed to load ", LT_ERROR);
 
 	}
+	//init a default material for all models 
+	m_defaultMaterials = TMakeShared <USMaterial>(); 
+
+	//set the texture of the default material 
+	m_defaultMaterials->m_baseColourMap = defaultTexture;
+
 
 	//DEBUG
-	m_model = ImportModel("Models/Helmet3/Helmet3.fbx");
-	m_model.lock()->GetTransform().scale = glm::vec3(0.1f);
-	m_model.lock()->GetTransform().position = glm::vec3(0.0f, -1.5f, 0.0f);
+	ImportModel("Models/Helmet3/Helmet3.fbx");
+	//m_model.lock()->GetTransform().scale = glm::vec3(0.1f);
+	//m_model.lock()->GetTransform().position = glm::vec3(0.0f, -1.5f, 0.0f);
 
 	//creating a texture 
 	TShared<UTexture> tex = TMakeShared<UTexture>();
@@ -128,17 +132,17 @@ bool UGraphicsEngine::InitEngine(SDL_Window* sdlWindow, const bool& vsync)
 	mat->m_specularMap = spectex2;
 
 	//setting the materials to the 0 slot in the model 
-	m_model.lock()->SetMaterialBySlot(1, mat);
-	m_model.lock()->SetMaterialBySlot(0, mat2);
+	//m_model.lock()->SetMaterialBySlot(1, mat);
+	//m_model.lock()->SetMaterialBySlot(0, mat2);
 
 
 
 
 
 	//import Military Knife
-	m_model2 = ImportModel("Models/MilitaryKnife/Military_Knife_low.fbx");
-	m_model2.lock()->GetTransform().scale = glm::vec3(0.1f);
-	m_model2.lock()->GetTransform().position = glm::vec3(1.0f, 2.0f, 0.0f);
+	ImportModel("Models/MilitaryKnife/Military_Knife_low.fbx");
+	//m_model2.lock()->GetTransform().scale = glm::vec3(0.1f);
+	//m_model2.lock()->GetTransform().position = glm::vec3(1.0f, 2.0f, 0.0f);
 
 	//creating a texture 
 	TShared<UTexture> texKnife = TMakeShared<UTexture>();
@@ -168,15 +172,15 @@ bool UGraphicsEngine::InitEngine(SDL_Window* sdlWindow, const bool& vsync)
 	matKnife2->m_specularMap = spectexKnife2;
 
 	//setting the materials to the 0 slot in the model 
-	m_model2.lock()->SetMaterialBySlot(1, matKnife);
-	m_model2.lock()->SetMaterialBySlot(0, matKnife2);
+	//m_model2.lock()->SetMaterialBySlot(1, matKnife);
+	//m_model2.lock()->SetMaterialBySlot(0, matKnife2);
 	
 
 
 	//import Cambot
-	m_model3=ImportModel("Models/Cambat/axe_finished.fbx"); 
-	m_model3.lock()->GetTransform().scale = glm::vec3(0.001f);
-	m_model3.lock()->GetTransform().position = glm::vec3(-2.0f, 1.0f, 0.0f);
+	ImportModel("Models/Cambat/axe_finished.fbx"); 
+	//m_model3.lock()->GetTransform().scale = glm::vec3(0.001f);
+	//m_model3.lock()->GetTransform().position = glm::vec3(-2.0f, 1.0f, 0.0f);
 
 	//creating a texture 
 	TShared<UTexture> texCambat = TMakeShared<UTexture>();
@@ -197,7 +201,7 @@ bool UGraphicsEngine::InitEngine(SDL_Window* sdlWindow, const bool& vsync)
 	matCambat->m_specularMap = spectexCambat;
 
 	//setting the materials to the 0 slot in the model 
-	m_model3.lock()->SetMaterialBySlot(1, matKnife);
+	//m_model3.lock()->SetMaterialBySlot(1, matKnife);
 	
 
 
@@ -208,13 +212,14 @@ bool UGraphicsEngine::InitEngine(SDL_Window* sdlWindow, const bool& vsync)
 	if (const auto& lightRef = dirLight.lock()) {
 		lightRef->colour = glm::vec3(1.0f, 1.0f, 0.0f);
 		lightRef->direction = glm::vec3(0.0f, -1.0f, 0.0f);
-		lightRef->ambient = glm::vec3(0.1f);
+		lightRef->ambient = glm::vec3(0.2f);
 	}
 
 	const auto& pointLight = CreatePointLight();
 	if (const auto& lightRef = pointLight.lock()) {
 		lightRef->colour = glm::vec3(0.0f, 0.0f, 1.0f);
-		lightRef->position = glm::vec3(5.0f,0.0f,0.0f);
+		lightRef->position = glm::vec3(-25.0f,0.0f,0.0f);
+		lightRef->intensity = 10.0f;
 	}
 
 	//log the success if the graphics engine init
@@ -233,17 +238,7 @@ void UGraphicsEngine::Render(SDL_Window* sdlWindow)
 	//clear the back last frame	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	m_model.lock()->GetTransform().rotation.x += 0.01f;
-	m_model.lock()->GetTransform().rotation.y += 0.01f;
-	m_model.lock()->GetTransform().rotation.z += 0.01f;
-
-	m_model2.lock()->GetTransform().rotation.x += 0.01f;
-	m_model2.lock()->GetTransform().rotation.y += 0.01f;
-	m_model2.lock()->GetTransform().rotation.z += 0.01f;
-
-	m_model3.lock()->GetTransform().rotation.x += 0.01f;
-	m_model3.lock()->GetTransform().rotation.y += 0.01f;
-	m_model3.lock()->GetTransform().rotation.z += 0.01f;
+	
 
 
 	//activate shader 
@@ -254,8 +249,17 @@ void UGraphicsEngine::Render(SDL_Window* sdlWindow)
 	m_shader->SetWorldTransform(m_camera);
 
 	//render custom graphics
-	for (const auto& modelRef : m_models) {
-		modelRef->Render(m_shader, m_lights);
+	for (int i = m_models.size() - 1; i > +0; --i) {
+		if (const auto& modelRef = m_models[i].lock()) {
+			modelRef->Render(m_shader, m_lights);
+
+		}
+		else {
+			//erase from the array if there is no reference 
+			m_models.erase(m_models.begin() + i );
+
+		}
+		
 	}
 
 
@@ -281,10 +285,10 @@ TWeak<USDirLight> UGraphicsEngine::CreateDirLight()
 	return newLight;
 }
 
-TWeak<UModel> UGraphicsEngine::ImportModel(const UString& path)
+TShared<UModel> UGraphicsEngine::ImportModel(const UString& path)
 {
 	const auto& newModel = TMakeShared<UModel>();
-	newModel->ImportModel(path);
+	newModel->ImportModel(path, m_defaultMaterials);
 	m_models.push_back(newModel);
 
 	return newModel;

@@ -108,14 +108,19 @@
     <ClCompile Include="Source\Private\UWindow.cpp" />
     <ClCompile Include="Source\Private\Graphics\UTexture.cpp" />
     <ClCompile Include="Source\Private\Graphics\UModel.cpp" />
+    <ClCompile Include="Source\Private\Game\GameObjects\UWorldObject.cpp" />
+    <ClCompile Include="Source\Private\Game\GameObjects\MyObjects\Helmet.cpp" />
+    <ClCompile Include="Source\Private\Game\GameObjects\MyObjects\Knife.cpp" />
     <ClCompile Include="Source\Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ExternalLibs\Includes\STB_IMAGE\stb_image.h" />
     <ClInclude Include="Source\Public\Debug\UDebug.h" />
     <ClInclude Include="Source\Public\EngineTypes.h" />
+    <ClInclude Include="Source\Public\Game\GameObjects\MyObjects\Helmet.h" />
+    <ClInclude Include="Source\Public\Game\GameObjects\MyObjects\Knife.h" />
     <ClInclude Include="Source\Public\Game\GameObjects\UObject.h" />
-    <ClInclude Include="Source\Public\Game\GameObjects\UObjectChild.h" />
+    <ClInclude Include="Source\Public\Game\GameObjects\UWorldObject.h" />
     <ClInclude Include="Source\Public\Game\UGameEngine.h" />
     <ClInclude Include="Source\Public\Graphics\UGraphicsEngine.h" />
     <ClInclude Include="Source\Public\Graphics\UMesh.h" />
@@ -127,6 +132,8 @@
     <ClInclude Include="Source\Public\Graphics\UTexture.h" />
     <ClInclude Include="Source\Public\Listeners\UEvents.h" />
     <ClInclude Include="Source\Public\Listeners\UInput.h" />
+    <ClInclude Include="Source\Public\Math\USBox.h" />
+    <ClInclude Include="Source\Public\Math\USCollision.h" />
     <ClInclude Include="Source\Public\Math\USTransform.h" />
     <ClInclude Include="Source\Public\UWindow.h" />
   </ItemGroup>

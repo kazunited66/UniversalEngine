@@ -59,6 +59,7 @@ public:
 	//render the graphics engine 
 	void Render();
 
+	TUnique<UGraphicsEngine>& GetGraphics() { return m_graphicsEngine;  }
 
 private:
 	//a ref to the window in sdl 

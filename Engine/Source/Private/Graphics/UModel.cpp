@@ -6,7 +6,7 @@
 #include <ASSIMP/postprocess.h>
 #include <ASSIMP/mesh.h>
 
-void UModel::ImportModel(const UString& filePath)
+void UModel::ImportModel(const UString& filePath, const TShared<USMaterial>& defaultMaterial)
 {
 	//crete an assimp importer 
 	Assimp::Importer importer;
@@ -44,6 +44,10 @@ void UModel::ImportModel(const UString& filePath)
 	//set the materials srtack size to the amount of materials on the model 
 	m_materialsStack.resize(scene->mNumMaterials);
 
+	for (auto& materialRef : m_materialsStack) {
+		materialRef = defaultMaterial; 
+	}
+
 
 	//log the success of the model 
 	UDebug::Log("Model successfully imported with (" + std::to_string(meshesCreated) + " ) + meshes: "
@@ -53,7 +57,7 @@ void UModel::ImportModel(const UString& filePath)
 void UModel::Render(const TShared<UShaderProgram>& shader, const TArray<TShared<USLight>>& lights)
 {
 	for (const auto& mesh2 : m_meshStack) {
-		mesh2->Render(shader, m_transform, lights, m_materialsStack[mesh2->materialIndex]);
+		mesh2->Render(shader, m_transform + m_offset, lights, m_materialsStack[mesh2->materialIndex]);
 	}
 
 }

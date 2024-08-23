@@ -1,10 +1,9 @@
 #include"Game/UGameEngine.h"
+#include"Game/GameObjects/UWorldObject.h"
 
-
-//DEBUG
-#include"Game/GameObjects/UObjectChild.h"
-
-
+//CUSTOM
+#include"Game/GameObjects/MyObjects/Helmet.h"
+#include"Game/GameObjects/MyObjects/Knife.h"
 
 UGameEngine* UGameEngine::GetGameEngine()
 {
@@ -38,6 +37,11 @@ bool UGameEngine::Run()
 void UGameEngine::DestroyObject(const TShared<UObject>& object)
 {
 	m_objectsPendingDestroy.push_back(object); 
+}
+
+TUnique<UGraphicsEngine>& UGameEngine::GetGraphics()
+{
+	return m_window->GetGraphics(); 
 }
 
 UGameEngine::UGameEngine()
@@ -102,8 +106,10 @@ void UGameEngine::Start()
 {
 	//register the window input 
 	m_window->RegisterInput(m_input);
-
-	CreateObject<UObjectChild>().lock()->SetLifeTime(3.0f); 
+	CreateObject<Helmet>(); 
+	CreateObject<Knife>().lock()->GetTransform().position.y=25.0f;
+	CreateObject<Knife>().lock()->GetTransform().position.y = -25.0f;
+	
 }
 
 void UGameEngine::GameLoop()

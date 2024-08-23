@@ -16,12 +16,12 @@ class UModel {
 
 public:
 	UModel() = default;
-	~UModel() = default;
+	~UModel() { UDebug::Log("Model destroyed"); }
 
 
 	//import a 3d model from fil
 	//uses the ASSIMP import library, check docs to know which file types accpeted
-	void ImportModel(const UString& filePath);
+	void ImportModel(const UString& filePath, const TShared<USMaterial>& defaultMaterial);
 
 	//render all of the member within the model
 	//transform of meshes will be based on the models transform 
@@ -32,6 +32,8 @@ public:
 
 	void SetMaterialBySlot(unsigned int slot, TShared<USMaterial>& material);
 
+	//transform offset 
+	USTransform m_offset;
 private:
 	//find all of the meshes in a scene and concert them to a Umesh
 	bool FindImportMeshes(const aiNode& node, const aiScene& scene,

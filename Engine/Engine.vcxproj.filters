@@ -48,6 +48,15 @@
     <ClCompile Include="Source\Private\Game\GameObjects\UObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Private\Game\GameObjects\UWorldObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\Game\GameObjects\MyObjects\Helmet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\Game\GameObjects\MyObjects\Knife.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Public\UWindow.h">
@@ -95,13 +104,25 @@
     <ClInclude Include="Source\Public\Game\GameObjects\UObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Public\Game\GameObjects\UObjectChild.h">
+    <ClInclude Include="Source\Public\Game\GameObjects\UWorldObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Public\Graphics\USLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Public\Graphics\USMaterial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Math\USBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Math\USCollision.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Game\GameObjects\MyObjects\Helmet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Game\GameObjects\MyObjects\Knife.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

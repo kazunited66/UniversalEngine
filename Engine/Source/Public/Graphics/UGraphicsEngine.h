@@ -31,7 +31,7 @@ public:
 	TWeak<USDirLight> CreateDirLight();
 
 	//import a model and rertun a weak pointer 
-	TWeak<UModel>ImportModel(const UString& path);
+	TShared<UModel>ImportModel(const UString& path);
 
 	//creates a material for the engoine 
 	TShared<USMaterial> CreateMaterial();
@@ -48,8 +48,8 @@ private:
 	TArray<TShared<USLight>> m_lights;
 
 	//stored all of the models in the engine 
-	TArray<TShared<UModel>> m_models;
+	TArray<TWeak<UModel>> m_models;
 
-	//
-
+	//default material for all models 
+	TShared<USMaterial>m_defaultMaterials; 
 };

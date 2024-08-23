@@ -111,14 +111,18 @@
     <ClCompile Include="Source\Private\Game\GameObjects\UWorldObject.cpp" />
     <ClCompile Include="Source\Private\Game\GameObjects\MyObjects\Helmet.cpp" />
     <ClCompile Include="Source\Private\Game\GameObjects\MyObjects\Knife.cpp" />
+    <ClCompile Include="Source\Private\Game\GameObjects\MyObjects\Player.cpp" />
+    <ClCompile Include="Source\Private\Game\GameObjects\MyObjects\Grenade.cpp" />
     <ClCompile Include="Source\Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ExternalLibs\Includes\STB_IMAGE\stb_image.h" />
     <ClInclude Include="Source\Public\Debug\UDebug.h" />
     <ClInclude Include="Source\Public\EngineTypes.h" />
+    <ClInclude Include="Source\Public\Game\GameObjects\MyObjects\Grenade.h" />
     <ClInclude Include="Source\Public\Game\GameObjects\MyObjects\Helmet.h" />
     <ClInclude Include="Source\Public\Game\GameObjects\MyObjects\Knife.h" />
+    <ClInclude Include="Source\Public\Game\GameObjects\MyObjects\Player.h" />
     <ClInclude Include="Source\Public\Game\GameObjects\UObject.h" />
     <ClInclude Include="Source\Public\Game\GameObjects\UWorldObject.h" />
     <ClInclude Include="Source\Public\Game\UGameEngine.h" />

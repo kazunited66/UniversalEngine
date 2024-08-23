@@ -57,6 +57,12 @@
     <ClCompile Include="Source\Private\Game\GameObjects\MyObjects\Knife.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Private\Game\GameObjects\MyObjects\Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Private\Game\GameObjects\MyObjects\Grenade.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Public\UWindow.h">
@@ -123,6 +129,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Public\Game\GameObjects\MyObjects\Knife.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Game\GameObjects\MyObjects\Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Public\Game\GameObjects\MyObjects\Grenade.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

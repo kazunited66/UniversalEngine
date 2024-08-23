@@ -4,7 +4,8 @@
 //CUSTOM
 #include"Game/GameObjects/MyObjects/Helmet.h"
 #include"Game/GameObjects/MyObjects/Knife.h"
-
+#include"Game/GameObjects/MyObjects/Player.h"
+#include"Game/GameObjects/MyObjects/Grenade.h"
 UGameEngine* UGameEngine::GetGameEngine()
 {
 	static UGameEngine* instance = new UGameEngine();
@@ -106,10 +107,15 @@ void UGameEngine::Start()
 {
 	//register the window input 
 	m_window->RegisterInput(m_input);
-	CreateObject<Helmet>(); 
-	CreateObject<Knife>().lock()->GetTransform().position.y=25.0f;
-	CreateObject<Knife>().lock()->GetTransform().position.y = -25.0f;
+	TWeak<Helmet> helmet = CreateObject<Helmet>();
+	TWeak<Knife> knife = CreateObject<Knife>();
+	TWeak<Grenade> grenade = CreateObject<Grenade>();
+	CreateObject<Player>();
 	
+
+	helmet.lock()->GetTransform().position = glm::vec3(0.0f, 50.0f, 50.0f);
+	knife.lock()->GetTransform().position = glm::vec3(0.0f, 0.0f, 50.0f);
+	grenade.lock()->GetTransform().position = glm::vec3(0.0f, -50.0f, 50.0f);
 }
 
 void UGameEngine::GameLoop()
@@ -162,6 +168,25 @@ void UGameEngine::Tick()
 	//Run through all objects in the game and run their ticks 
 	for (const auto& UObjectRef : m_objectStack) {
 		UObjectRef->Tick(DeltaTimeF());
+
+		//check the object is a world object, otherwise skip logic 
+		if (const auto& woRef = std::dynamic_pointer_cast<UWorldObject>(UObjectRef)) {
+			//check the object has collisions 
+			if (woRef->HasCollisions()) {
+				//loop though all objects to ttest again 
+				for (const auto& otherObj : m_objectStack) {
+					if (const auto& otherWoRef = std::dynamic_pointer_cast<UWorldObject>(otherObj)) {
+						//test other object is also a world object 
+						if (!otherWoRef->HasCollisions())
+							continue;
+						//if all is good, test is the collisions are overlapping 
+						woRef->TestCollision(otherWoRef);
+					}
+				}
+			}
+		}
+
+		//UObjectRef->Tick(DeltaTimeF());
 		UObjectRef->PostTick(DeltaTimeF());
 	}
 

@@ -9,6 +9,9 @@ struct USBox {
 		halfSize = glm::vec3(0.0f);
 	} 
 
+	USBox(glm::vec3 position, glm::vec3 halfSize) :
+		position(position), halfSize(halfSize) {}
+
 	static bool BoxOverlap(const USBox& box1, const USBox& box2) {
 		//ensure that a 0 size always retrun false 
 		if (glm::length(box1.halfSize) == 0.0f || glm::length(box2.halfSize) == 0.0f)

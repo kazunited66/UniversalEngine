@@ -1,5 +1,6 @@
 #pragma once
 #include "Math/USTransform.h"
+#include "Game/UGameEngine.h"
 
 struct USCamera {
 	USCamera() {
@@ -8,14 +9,12 @@ struct USCamera {
 		aspectRation = 1.0f;
 		nearClip = 0.01f;
 		farClip = 10000.0f;
-		rotateSpeed = 0.01f;
-		moveSpeed = 0.01f;
+		rotateSpeed = 0.1f;
+		moveSpeed = 50.0f;
 
 	}
 	//Rotate the camera based on the rotation passed in 
 	void Rotate(glm::vec3 rotation, glm::vec3 scale = glm::vec3(1.0f)) {
-		if (glm::length(rotation) != 0.0f)
-			rotation = glm::normalize(rotation);
 
 		transform.rotation += rotation * scale * rotateSpeed;
 
@@ -29,16 +28,24 @@ struct USCamera {
 
 	 
 	//  the camera based on the rotation passed in 
-	void Translate(glm::vec3 translation, glm::vec3 scale = glm::vec3(1.0f)) {
+	void Translate(glm::vec3 translation, glm::vec3 scale = glm::vec3(5.0f)) {
 		//move the inout direction forward if required 
 		glm::vec3 moveDir = transform.Forward() * translation.z;
 		moveDir += transform.Right() * translation.x;
-		moveDir.y += translation.y;
+		moveDir.y = translation.y;
 
 		if (glm::length(moveDir) != 0.0f)
 			moveDir = glm::normalize(moveDir);
 
-		transform.position += moveDir * scale * moveSpeed;
+		glm::vec3 direction = moveDir * scale; 
+
+		float deltaTime = 1.0f;
+		if (const auto& ge = UGameEngine::GetGameEngine()) {
+
+			deltaTime = ge->DeltaTimeF();
+		}
+		
+		transform.position += direction * moveSpeed * deltaTime;
 
 	}
 

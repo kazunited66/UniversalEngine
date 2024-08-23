@@ -49,6 +49,9 @@ public:
 	//draw the mesh to the renderer 
 	void Render(const std::shared_ptr<UShaderProgram>& shader, const USTransform& transform, const TArray<TShared<USLight>>& lights, const TShared<USMaterial>& material);
 
+	//wireframe of a mesh 
+	void WireRender(const TShared<UShaderProgram>& shader, const USTransform& transform);
+
 	//set the transform of the mesh relative to the model 
 	void SetRelativeTransform(const glm::mat4& transform) { m_matTransform = transform; }
 

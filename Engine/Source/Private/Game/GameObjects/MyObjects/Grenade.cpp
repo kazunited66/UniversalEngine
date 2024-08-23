@@ -13,8 +13,6 @@ void Grenade::OnStart()
 		//set scale 
 		//GetTransform().scale = glm::vec3(0.1f);
 
-		//set position
-		modelRef->m_offset.position.x = 0.0f;
 
 		//creating a texture 
 		TShared<UTexture> tex = TMakeShared<UTexture>();
@@ -35,7 +33,7 @@ void Grenade::OnStart()
 		modelRef->SetMaterialBySlot(0, mat);
 	}
 
-	AddCollision({ GetTransform().position, glm::vec3(10.0f) });
+	AddCollision({ GetTransform().position, glm::vec3(10.0, 10.0, 10.0f) }, true);
 }
 
 void Grenade::OnTick(float deltaTime)

@@ -19,7 +19,14 @@ TWeak<USCollision> UWorldObject::AddCollision(const USBox& box, const bool& debu
     //set the position and size 
     newCol->box = box;
    
-    //TO DO: DEBUG COLLISION 
+    //add a draw collision mesh if debugging 
+    if (debug) {
+        UGameEngine::GetGameEngine()->GetGraphics()->CreateCollisionMesh(newCol);
+    }
+ 
+   
+
+    //add the collision to the array 
     m_objectCollisions.push_back(newCol);
 
     //return a weak version 

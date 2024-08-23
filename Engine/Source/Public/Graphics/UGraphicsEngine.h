@@ -3,7 +3,9 @@
 #include<Graphics/USMaterial.h>
 typedef void* SDL_GLContext;
 struct SDL_Window;
+struct USCollision;
 class UModel;
+class UMesh;
 class UShaderProgram;
 struct USCamera;
 struct USLight;
@@ -36,12 +38,17 @@ public:
 	//creates a material for the engoine 
 	TShared<USMaterial> CreateMaterial();
 
+	//creates a collision meshe to be rendered as a wireframe 
+    void CreateCollisionMesh(const TWeak<USCollision>& col);
+
 private:
 	// storing memory location for open gl context 
 	SDL_GLContext m_sdlGLContext;
 
 	//store the shader for the engine
 	TShared<UShaderProgram> m_shader;
+
+	TShared<UShaderProgram> m_wireShader;
 	//store camera 
 	TShared<USCamera> m_camera;
 	//store all light in the engine 
@@ -49,6 +56,9 @@ private:
 
 	//stored all of the models in the engine 
 	TArray<TWeak<UModel>> m_models;
+
+	//stored all of the collision meshes
+	TArray<TWeak<USCollision>> m_collisions;
 
 	//default material for all models 
 	TShared<USMaterial>m_defaultMaterials; 

@@ -186,3 +186,26 @@ void UMesh::Render(const std::shared_ptr<UShaderProgram>& shader, const USTransf
 	//clear the vao 
 	glBindVertexArray(0);
 }
+
+void UMesh::WireRender(const TShared<UShaderProgram>& shader, const USTransform& transform)
+{
+	//update the transform of the mesh based on the model transform 
+	shader->SetModelTransform(transform);
+
+	//set the relative transform of the mesh in the shader 
+	shader->SetMeshTransform(m_matTransform);
+
+	//binding this aesh as the active vao
+	glBindVertexArray(m_vao);
+
+	//render the vao
+	glDrawElements(
+		GL_LINES,//draw the mesh as lines
+		static_cast<GLsizei>(m_indices.size()),//how many vertices are there? 
+		GL_UNSIGNED_INT, //what typefo data is the index array  
+		nullptr //how many are you gonna skip 
+	);
+
+	//clear the vao 
+	glBindVertexArray(0);
+}

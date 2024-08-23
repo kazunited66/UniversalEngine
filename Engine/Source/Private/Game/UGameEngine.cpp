@@ -107,7 +107,7 @@ void UGameEngine::Start()
 {
 	//register the window input 
 	m_window->RegisterInput(m_input);
-	TWeak<Helmet> helmet = CreateObject<Helmet>();
+	TWeak<Helmet> helmet = CreateObject<Helmet>(); 
 	TWeak<Knife> knife = CreateObject<Knife>();
 	TWeak<Grenade> grenade = CreateObject<Grenade>();
 	CreateObject<Player>();

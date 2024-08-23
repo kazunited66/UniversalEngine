@@ -14,8 +14,7 @@ void Knife::OnStart()
 		//set scale 
 		GetTransform().scale = glm::vec3(0.1f);
 
-		//set posiotion
-		modelRef->m_offset.position.x = 0.0f;
+	
 
 		//creating a texture 
 		TShared<UTexture> texKnife = TMakeShared<UTexture>();
@@ -27,11 +26,11 @@ void Knife::OnStart()
 
 		//creating a specilar texture 
 		TShared<UTexture> spectexKnife = TMakeShared<UTexture>();
-		spectexKnife->LoadTexture("bandle texture spec colour", "Models/Helmet3/textures/Blade_M_Specular.png");
+		spectexKnife->LoadTexture("bandle texture spec colour", "Models/MilitaryKnife/textures/Blade_M_Specular.png");
 
 		//creating a specilar texture 
 		TShared<UTexture> spectexKnife2 = TMakeShared<UTexture>();
-		spectexKnife2->LoadTexture("bandle texture spec colour", "Models/Helmet3/textures/Handle_M_Specular.png");
+		spectexKnife2->LoadTexture("bandle texture spec colour", "Models/MilitaryKnife/textures/Handle_M_Specular.png");
 
 		//creating a material 
 		TShared<USMaterial> matKnife = TMakeShared<USMaterial>();
@@ -53,7 +52,7 @@ void Knife::OnStart()
 	}
 	
 
-	AddCollision({ GetTransform().position, glm::vec3(1.0f) });
+	AddCollision({ GetTransform().position, glm::vec3(15.0, 10.0, 10.0f) }, true);
 }
 
 void Knife::OnTick(float deltaTime)

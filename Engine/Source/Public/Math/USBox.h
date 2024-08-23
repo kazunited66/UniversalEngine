@@ -16,6 +16,7 @@ struct USBox {
 		//ensure that a 0 size always retrun false 
 		if (glm::length(box1.halfSize) == 0.0f || glm::length(box2.halfSize) == 0.0f)
 			return false; 
+
 		//detect if x is in bounds 
 		if (box1.GetMin().x > box2.GetMax().x ||
 			box1.GetMax().x < box2.GetMin().x)

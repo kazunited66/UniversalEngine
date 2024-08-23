@@ -45,6 +45,8 @@ public:
 	//set the material in the shader 
 	void SetMaterial(const TShared<USMaterial>& material);
 
+	void SetWireColour(const glm::vec3 colour); 
+
 
 private:
 	//import a shader based on the shader type 

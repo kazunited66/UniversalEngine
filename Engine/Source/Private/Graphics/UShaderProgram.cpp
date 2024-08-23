@@ -263,6 +263,11 @@ void UShaderProgram::SetMaterial(const TShared<USMaterial>& material)
 
 }
 
+void UShaderProgram::SetWireColour(const glm::vec3 colour)
+{
+	glUniform3fv(glGetUniformLocation(m_programID, "wireColour"), 1, glm::value_ptr(colour)); 
+}
+
 void UShaderProgram::SetWorldTransform(const TShared<USCamera>& camera)
 {
 	//initialise a matrics 

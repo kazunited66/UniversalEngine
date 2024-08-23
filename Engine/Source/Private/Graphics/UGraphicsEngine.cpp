@@ -128,8 +128,7 @@ bool UGraphicsEngine::InitEngine(SDL_Window* sdlWindow, const bool& vsync)
 	//set the texture of the default material 
 	m_defaultMaterials->m_baseColourMap = defaultTexture;
 	//DEBUG
-	//import Cambot
-	ImportModel("Models/Cambat/axe_finished.fbx");
+
 
 
 
@@ -174,7 +173,7 @@ void UGraphicsEngine::Render(SDL_Window* sdlWindow)
 	m_shader->SetWorldTransform(m_camera);
 
 	//render custom graphics
-	for (int i = m_models.size() - 1; i > +0; --i) {
+	for (int i = m_models.size() - 1; i >=0; --i) {
 		if (const auto& modelRef = m_models[i].lock()) {
 			modelRef->Render(m_shader, m_lights);
 

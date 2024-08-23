@@ -108,14 +108,20 @@ void UGameEngine::Start()
 	//register the window input 
 	m_window->RegisterInput(m_input);
 	TWeak<Helmet> helmet = CreateObject<Helmet>(); 
+	TWeak<Helmet> helmet2 = CreateObject<Helmet>();
 	TWeak<Knife> knife = CreateObject<Knife>();
+	TWeak<Knife> knife2 = CreateObject<Knife>();
 	TWeak<Grenade> grenade = CreateObject<Grenade>();
+	TWeak<Grenade> grenade2 = CreateObject<Grenade>();
 	CreateObject<Player>();
 	
 
 	helmet.lock()->GetTransform().position = glm::vec3(0.0f, 50.0f, 50.0f);
-	knife.lock()->GetTransform().position = glm::vec3(0.0f, 0.0f, 50.0f);
+	helmet2.lock()->GetTransform().position = glm::vec3(100.0f, 200.0f, 100.0f);
+	knife.lock()->GetTransform().position = glm::vec3(100.0f, -50.0f, 150.0f);
+	knife2.lock()->GetTransform().position = glm::vec3(100.0f, -200.0f, 50.0f);
 	grenade.lock()->GetTransform().position = glm::vec3(0.0f, -50.0f, 50.0f);
+	grenade2.lock()->GetTransform().position = glm::vec3(-100.0f, 50.0f, 150.0f);
 }
 
 void UGameEngine::GameLoop()

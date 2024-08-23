@@ -28,7 +28,7 @@ struct USCamera {
 
 	 
 	//  the camera based on the rotation passed in 
-	void Translate(glm::vec3 translation, glm::vec3 scale = glm::vec3(5.0f)) {
+	void Translate(glm::vec3 translation, glm::vec3 scale = glm::vec3(1.0f)) {
 		//move the inout direction forward if required 
 		glm::vec3 moveDir = transform.Forward() * translation.z;
 		moveDir += transform.Right() * translation.x;
